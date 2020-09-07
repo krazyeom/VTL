@@ -24,35 +24,45 @@ public static void main ( String [] args )
 	BufferedReader 	stdin ; 
 	String 			str ;
 	StringBuffer	cmd = new StringBuffer ( 1000 ) ;
-	boolean 		read_only = false, create_metabase = false ;
+	boolean 		read_only = false, create_metabase = false, bts = false ;
 	String			command_file_name = null, url,username, password ;
   	
-	if ( args.length < 3 || args.length > 5 ) {
+	if ( args.length < 3 || args.length > 6 ) {
 		Sys.printStdOut ( "\nUsage: " ) ;
-		Sys.printStdOut ( "vtl.jar databaseUrl username password { -createmetabase | -readonly | -vtl2.0 | -x commandFile }" ) ; 
+		Sys.printStdOut ( "vtl.jar databaseUrl username password { -createmetabase | -readonly | -vtl2.0 | -x commandFile" ) ;
 		return ;
 	}
 	
 	url = args[0] ;
 	username = args[1] ;
 	password = args[2] ;
-	
+
 	switch ( args.length ) {
 		case 4 :
 			switch ( args[3] ) {
 				case "-readonly" : read_only = true ; break ;
 				case "-createmetabase" : create_metabase = true ; break ;
 				case "-vtl2.0" : vtl20only = true ; break ;
-				case "-bts" : sys.printStdOut( "Congratulations! 1st on Billboard Hot 100: 'Dynamite' by BTS" ); system.exit ( 1 ) ;
+				case "-bts" : Sys.printStdOut( "Congratulations! 1st on Billboard Hot 100: 'Dynamite' by BTS" ); System.exit ( 1 ) ;
 			}
 			break ;
-		case 5 : 
-	  		if ( args [3].equals ( "-x" ) )
-	  			command_file_name = args [ 4 ] ;
-	  		else {	
-	  			Sys.printStdOut( "bad option" ) ;
-	  			return;	  
-	  		}
+		case 5 :
+			if (args[3].equals ("-x") ) {
+				command_file_name = args[4];
+			} else {
+				Sys.printStdOut( "bad option" ) ;
+				return;
+			}
+			break ;
+		case 6 :
+			if (args[3].equals ("-x") && args[5].equals ("-bts") ) {
+				command_file_name = args[4];
+				bts = true;
+			} else {
+				Sys.printStdOut( "bad option" ) ;
+				return;
+			}
+			break ;
 	}
 	
 	try {
@@ -82,7 +92,9 @@ public static void main ( String [] args )
 	}
 
 	if ( command_file_name != null ) {
-		//Sys.printStdOut ( "Opening file " + command_file_name ) ;
+		if (!bts) {
+			Sys.printStdOut("Opening file " + command_file_name);
+		}
 		try {
 			stdin = new BufferedReader ( new InputStreamReader ( new FileInputStream ( command_file_name ) ) ) ;
 			while ( ( str = stdin.readLine ( ) ) != null ) {
@@ -95,7 +107,9 @@ public static void main ( String [] args )
 		}
 		try {
 		    String ret = Command.eval ( cmd.toString(), false ) ;
-		    Sys.printStdOut ("RES_OK:" + ret);		    
+			if (bts) {
+				Sys.printStdOut("RES_OK:" + ret);
+			}
 		    Db.disconnectDb() ;
 		    System.exit ( 0 ) ;
 		}
@@ -125,7 +139,7 @@ try {
 catch ( Exception e1 ) {
 	Sys.printErrorMessage ( e1.getMessage () ) ;
 	str = null ;
-	System.exit ( 1 ) ;			    	
+	System.exit ( 1 ) ;
 }
 if ( str == null || ! str.equals ( "yes" ) )
 	System.exit ( 1 ) ;
