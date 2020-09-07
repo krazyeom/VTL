@@ -43,6 +43,7 @@ public static void main ( String [] args )
 				case "-readonly" : read_only = true ; break ;
 				case "-createmetabase" : create_metabase = true ; break ;
 				case "-vtl2.0" : vtl20only = true ; break ;
+				case "-bts" : sys.printStdOut( "Congratulations! 1st on Billboard Hot 100: 'Dynamite' by BTS" ); system.exit ( 1 ) ;
 			}
 			break ;
 		case 5 : 
@@ -81,7 +82,7 @@ public static void main ( String [] args )
 	}
 
 	if ( command_file_name != null ) {
-		Sys.printStdOut ( "Opening file " + command_file_name ) ;
+		//Sys.printStdOut ( "Opening file " + command_file_name ) ;
 		try {
 			stdin = new BufferedReader ( new InputStreamReader ( new FileInputStream ( command_file_name ) ) ) ;
 			while ( ( str = stdin.readLine ( ) ) != null ) {
@@ -93,7 +94,8 @@ public static void main ( String [] args )
 	    	System.exit ( 1 ) ;			
 		}
 		try {
-		    Command.eval ( cmd.toString(), false ) ;
+		    String ret = Command.eval ( cmd.toString(), false ) ;
+		    Sys.printStdOut ("RES_OK:" + ret);		    
 		    Db.disconnectDb() ;
 		    System.exit ( 0 ) ;
 		}
@@ -109,7 +111,7 @@ public static void main ( String [] args )
 	if ( idx > 0 )
 		db = db.substring( idx + 1 ) ;
 	db = db.toLowerCase() ;
-	UIConsole.setConsole( "VTL Sandbox version 3.3 - " + args[1] + "@" + db ) ;
+	UIConsole.setConsole( "VTL Sandbox version 3.5 for BTS - " + args[1] + "@" + db ) ;
 }
 
 }
